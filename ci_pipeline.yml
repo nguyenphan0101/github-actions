@@ -1,0 +1,40 @@
+name: FX DataOps Pipeline
+
+# Khi nào thì hệ thống này chạy? -> Khi có code đẩy lên nhánh main
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  # ------ JOB 1: CHẠY UNIT TEST ------
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+        
+      - name: Run PyTest
+        run: pytest test_app.py -v
+
+  # ------ JOB 2: TEST DOCKER BUILD ------
+  docker-build:
+    needs: unit-test # Điều kiện: Bắt buộc Job 1 Xanh thì mới chạy Job 2
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+        
+      - name: Build Docker Image
+        # Lệnh này sẽ test xem Dockerfile có gõ sai cú pháp ở đâu không
+        run: docker build -t fx-app:test .
+
+
+        
