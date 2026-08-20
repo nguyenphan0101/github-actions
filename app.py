@@ -62,8 +62,7 @@ import datetime
 def extract_vnd_rate(json_data):
     """Bóc tách tỷ giá VND từ JSON. Trả về None nếu dữ liệu lỗi."""
     try:
-        # rate = json_data["rates"]["VND"]
-        rate = json_data["rates"]["VNĐ"]
+        rate = json_data["rates"]["VND"]
         return rate if rate > 0 else None
     except (KeyError, TypeError):
         return None
